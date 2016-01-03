@@ -130,9 +130,23 @@
             </div>        
         </div>
     </section><!--/#pricing-->
-    
+    <section id="portfolio">
+        <div class="container">
+           <div class="text-center">
+                <ul class="portfolio-filter">
+                    <li><a class="active" href="#" data-filter="*">All Works</a></li>
+                    <li><a href="#" data-filter=".creative">Creative</a></li>
+                    <li><a href="#" data-filter=".corporate">Corporate</a></li>
+                    <li><a href="#" data-filter=".portfolio">Portfolio</a></li>
+                </ul><!--/#portfolio-filter-->
+            </div>
+            <div class='portfolio-items' id="abigos"></div>
+        </div><!--/.container-->
+    </section><!--/#portfolio-->
+<!--
      <div id="response"></div><img id="profile" height="100px" width="100px" src="images/team/01.jpg" hidden="hidden" />
     
+-->
     <footer id="footer">
         <div class="container">
             <div class="row">
@@ -167,25 +181,32 @@
     <script src="js/jquery.isotope.min.js"></script>
     <script src="js/jquery.inview.min.js"></script>
     <script src="js/wow.min.js"></script>
-<!--    <script src="js/main.js"></script>-->
-    <script>
-        var sharecity;
-        var userid;
+    <script src="js/main.js"></script>
+<script>
 function getUserData() {
 	FB.api('/me?fields=birthday,email,name', function(response) {
-        var url="http://graph.facebook.com/"+response.id+"/picture?type=normal";
-        userid=response.id;
-        $.ajax({
-            type: "POST",
-            url: "saveprofile.php",
-            data: {img: url, id:response.id},
-            success: function(result){
-                $("#profile").attr("src","profile/"+response.id+".jpg");
-            }
-        });
-        $("#profile").show();
-		document.getElementById('response').innerHTML = 'Nome: ' + response.name + '<br>ID: '+ response.id + ' <br>Link Facebook: <a href="http://www.facebook.com/'+response.id+'">'+ 'www.facebook.com/'+response.id+'</a>'+ '<br> Email: ' + response.email + '<br> Aniversário: ' + response.birthday;
+//        var id;
+//		document.getElementById('response').innerHTML = 'Hello ' + response.name + 'ID'+ response.id + 'Email' + response.email + 'niver' + response.birthday;
+//        id= response.id;
+//        console.log(response);
+//        $("#profile").attr("src","http://graph.facebook.com/"+id+"/picture?type=normal");
 	});
+    getTaggable_Friends();
+}
+
+function getTaggable_Friends(){
+    FB.api("/me/taggable_friends?limit=5000",{fields:'name,picture.width(300).height(300)'},function (tag_friends) {
+        var gg="";
+        var src="";
+        var i;
+        for(i=0;i<=tag_friends.data.length;i++){
+//            $("#abigos").append("<br/><br/><img src='"+tag_friends.data[i].picture.data.url+"'/>");
+//            $("#abigos").append(tag_friends.data[i].name);
+            src=tag_friends.data[i].picture.data.url;
+            gg="<div class='portfolio-item creative'><div class='portfolio-item-inner'><img onclick='generateimg(this.src)' id='friend"+i+"' class='img-responsive' src='"+tag_friends.data[i].picture.data.url+"' alt='' width='300px' height='300px' /><div class='portfolio-info'><h3>"+tag_friends.data[i].name+"</h3>"+tag_friends.data[i].id+"<a class='preview' rel='prettyPhoto'><i class='fa fa-heart'></i></a></div></div><!--/.portfolio-item--></div>";
+            $("#abigos").append(gg);
+        }
+    });
 }
  
 window.fbAsyncInit = function() {
@@ -200,8 +221,6 @@ window.fbAsyncInit = function() {
 		if (response.status === 'connected') {
 			//user is authorized
 			document.getElementById('loginBtn').style.display = 'none';
-            $('#question').show();
-            $('#question-header').hide();
 //            window.location.replace("index.php?page='zawarudo'");
 			getUserData();
 		} else {
@@ -226,21 +245,17 @@ document.getElementById('loginBtn').addEventListener('click', function() {
 		if (response.authResponse) {
 			//user just authorized your app
 			document.getElementById('loginBtn').style.display = 'none';
-            $('#question').show();
-            $('#question-header').hide();
 			getUserData();
 		}
 	}, {scope: 'public_profile,email', return_scopes: true});
 }, false);
  
-document.getElementById('share').addEventListener('click', function() {
-//    $('meta[property="og:title"]').attr('content', 'wabalabadubdub');
-    $('meta[property="og:title"]').replaceWith('<meta property="og:title" content="New Title">');
+document.getElementById('share').addEventListener('click', function() {        
     FB.ui({
         method: 'share_open_graph',
         action_type: 'og.likes',
         action_properties: JSON.stringify({
-            object:'http://numerusoft.com/share.php?city='+sharecity,
+            object:'http://numerusoft.com/',
         })
     }, 
     function(response){
@@ -248,167 +263,28 @@ document.getElementById('share').addEventListener('click', function() {
       console.log(response);
     });
     
-}, false); 
+}, false);
+        
+function generateimg(picture){
+    var teste;
+        var img1 = document.getElementById('bg');
+//var img3 = document.getElementById('friend2');
+    var img2= new Image(800, 800);   
+    img2.src=picture;
+
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+canvas.width = img1.width;
+canvas.height = img1.height;
+
+context.globalAlpha = 1.0;
+
+context.drawImage(img1, 0, 0);
+    context.drawImage(img2, 600, 600, 300, 300);
+//context.globalAlpha = 1.0; //Remove if pngs have alpha
+
+
+}        
 </script>
-    <script>
-        var question={
-            Q1: {title: "Qual lingua você gostaria de aprender?", resp1:{text:"Inglês", nextq:"Q2"}, resp2:{text:"Francês", nextq:"Q3"}, resp3:{text:"Espanhol", nextq:"Q4"} },
-            Q2: {title: "Qual país você acha mais interessante?", resp1:{text:"Estados Unidos", nextq:"Q5"}, resp2:{text:"Canadá", nextq:"Q6"}, resp3:{text:"Austrália", nextq:"Q7"}, resp4:{text:"Inglaterra", nextq:"Q8"} },
-            Q3: {title: "Qual país você acha mais interessante?", resp1:{text:"França", nextq:"Q9"}, resp2:{text:"Canadá", nextq:"Q10"}},
-            Q4: {title: "Qual país você acha mais interessante?", resp1:{text:"Espanha", nextq:"Q11"}, resp2:{text:"Argentina", nextq:"Q12"}},
-            Q5: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Nova York"}, resp2:{text:"Festas", result:"Los Angeles"}, resp3:{text:"Praia", result:"Miami"}, resp4:{text:"Pontos Históricos", result:"Boston"}},
-            Q6: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Toronto"}, resp2:{text:"Festas", result:"Montreal"}, resp3:{text:"Parques", result:"Vancouver"}},
-            Q7: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Sidney"}, resp2:{text:"Esportes Radicais", result:"Cairns"}, resp3:{text:"Praias", result:"Gold Coast"}},
-            Q8: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Londres"}, resp2:{text:"Festas", result:"Liverpool"}, resp3:{text:"Pontos Históricos", result:"Manchester"}},
-            Q9: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Paris"}, resp2:{text:"Praias", result:"Nice"}, resp3:{text:"Pontos Históricos", result:"Amboise"}},
-            Q10: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Quebec"}, resp2:{text:"Festas", result:"Montreal"}},
-            Q11: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Madrid"}, resp2:{text:"Pontos Históricos", result:"Barcelona"}},
-            Q12: {title: "Qual das opções abaixo combina mais com você?", resp1:{text:"Cidade Grande", result:"Buenos Aires"}, resp2:{text:"Belezas Naturais", result:"Bariloche"}},
-        };
-        
-        var cities={
-            "Nova York":{image: "images/cities/Nova%20York.png", x:610, y:200},
-            "Los Angeles":{image: "images/cities/Los%20Angeles.png", x:567, y:242},
-            "Miami":{image: "images/cities/Miami.png", x:573, y:203},
-            "Boston":{image: "images/cities/Boston.png", x:555, y:180},
-            "Toronto":{image: "images/cities/Toronto.png", x:518, y:203},
-            "Montreal":{image: "images/cities/Montreal.png", x:573, y:200},
-            "Vancouver":{image: "images/cities/Vancouver.png", x:537, y:193},
-            "Sidney":{image: "images/cities/Sidney.png", x:510, y:205},
-            "Cairns":{image: "images/cities/Cairns.png", x:568, y:242},
-            "Gold Coast":{image: "images/cities/Gold%20Coast.png", x:568, y:242},
-            "Londres":{image: "images/cities/Londres.png", x:568, y:242},
-            "Liverpool":{image: "images/cities/Liverpool.png", x:568, y:242},
-            "Manchester":{image: "images/cities/Manchester.png", x:565, y:183},
-            "Paris":{image: "images/cities/Paris.png", x:406, y:175},
-            "Nice":{image: "images/cities/Nice.png", x:580, y:182},
-            "Amboise":{image: "images/cities/Amboise.png", x:565, y:215},
-            "Quebec":{image: "images/cities/Quebec.png", x:603, y:200},
-            "Madrid":{image: "images/cities/Madrid.png", x:568, y:200},
-            "Barcelona":{image: "images/cities/Barcelona.png", x:568, y:243},
-            "Buenos Aires":{image: "images/cities/Buenos%20Aires.png", x:750, y:185},
-            "Bariloche":{image: "images/cities/Bariloche.png", x:545, y:255},
-        };
-        
-        
-        function load_first_question(){
-            $("#title").html(question["Q1"].title);
-            if(question["Q1"].resp1){
-                $("#resp1").html("<strong>"+question["Q1"].resp1.text+"</strong>");
-                $("#resp1").attr("onclick", "load_nextquestion('"+question["Q1"].resp1.nextq+"');");
-                $("#resp1").show();
-            }
-            else{
-                $("#resp1").hide();
-            }
-            if(question["Q1"].resp2){
-                $("#resp2").html("<strong>"+question["Q1"].resp2.text+"</strong>");
-                $("#resp2").attr("onclick", "load_nextquestion('"+question["Q1"].resp2.nextq+"');");
-                $("#resp2").show();
-            }
-            else{
-                $("#resp2").hide();
-            }
-            if(question["Q1"].resp3){
-                $("#resp3").html("<strong>"+question["Q1"].resp3.text+"</strong>");
-                $("#resp3").attr("onclick", "load_nextquestion('"+question["Q1"].resp3.nextq+"');");
-                $("#resp3").show();
-            }
-            else{
-                $("#resp3").hide();
-            }
-            if(question["Q1"].resp4){
-                $("#resp4").html("<strong>"+question["Q1"].resp4.text+"</strong>");
-                $("#resp4").attr("onclick", "load_nextquestion('"+question["Q1"].resp4.nextq+"');");
-                $("#resp4").show();
-            }
-            else{
-                $("#resp4").hide();
-            }
-        }
-        load_first_question();
-        
-        function load_nextquestion(nextq){
-            $("#title").html(question[nextq].title);
-            $("#resp1").html("<strong>"+question[nextq].resp1.text+"</strong>");
-            if(question[nextq].resp1.nextq){
-                $("#resp1").attr("onclick", "load_nextquestion('"+question[nextq].resp1.nextq+"');");
-            }
-            else{
-                $("#resp1").attr("onclick", "get_city_result('"+question[nextq].resp1.result+"');");
-            }
-            $("#resp2").html("<strong>"+question[nextq].resp2.text+"</strong>");
-            if(question[nextq].resp2.nextq){
-                 $("#resp2").attr("onclick", "load_nextquestion('"+question[nextq].resp2.nextq+"');");
-            }
-            else{
-                $("#resp2").attr("onclick", "get_city_result('"+question[nextq].resp2.result+"');");
-            }
-            if(question[nextq].resp3){
-                $("#resp3").html("<strong>"+question[nextq].resp3.text+"</strong>");
-                if(question[nextq].resp3.nextq){
-                    $("#resp3").attr("onclick", "load_nextquestion('"+question[nextq].resp3.nextq+"');");
-                }
-                else{
-                    $("#resp3").attr("onclick", "get_city_result('"+question[nextq].resp3.result+"');");
-                }
-                $("#resp3").show();
-            }
-            else{
-                $("#resp3").hide();
-            }
-            if(question[nextq].resp4){
-                $("#resp4").html("<strong>"+question[nextq].resp4.text+"</strong>");
-                if(question[nextq].resp4.nextq){
-                    $("#resp4").attr("onclick", "load_nextquestion('"+question[nextq].resp4.nextq+"');");
-                }
-                else{
-                    $("#resp4").attr("onclick", "get_city_result('"+question[nextq].resp4.result+"');");
-                }
-                $("#resp4").show();
-            }
-            else{
-                $("#resp4").hide();
-            }
-        }
-        
-        function get_city_result(city){
-            sharecity=city.replace(" ","_");
-            $("#question").hide();
-            var bg= new Image();
-            var img2= document.getElementById('profile');  
-            var canvas = document.getElementById('canvas');
-            var context = canvas.getContext('2d');
-            canvas.width = 1336;
-            canvas.height = 752;
-            
-            context.globalAlpha = 1.0;
-            bg.onload = function() {
-                context.drawImage(img2, cities[city].x, cities[city].y, 200, 200);
-                context.drawImage(bg, 0, 0);
-            };
-            bg.src = cities[city].image;
-            $("#loading").show();
-            setTimeout(function(){
-                $("#loading").hide();
-                $("#canvas").show();
-                document.getElementById("share").style.display = "block";
-//                var canvasData = canvas.toDataURL("image/png");
-//                $.ajax({
-//                    url:'saveimg.php', 
-//                    type:'POST',
-//                    data:{
-//                        imgurl:canvasData,
-//                        city: city
-//                    },
-//                    success: function(response){
-////                        $("#canvas").after("<img src='"+city+".png' width='600' height='600'/>");
-//                        alert(response);
-//                    }
-//                });
-            }, 7000);
-                
-        }
-    </script>
 </body>
 </html>
