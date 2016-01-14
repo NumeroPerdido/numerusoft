@@ -134,13 +134,17 @@
         <div class="container">
            <div class="text-center">
                 <ul class="portfolio-filter">
-                    <li><a class="active" href="#" data-filter="*">All Works</a></li>
-                    <li><a href="#" data-filter=".creative">Creative</a></li>
+                    <li><a class="active" href="#" onclick="show_amigos();" >Amigos</a></li>
+                    <li><a id="tab_ficchar" href="#" onclick="show_ficchar();" >Personagens Fictícios</a></li>
                     <li><a href="#" data-filter=".corporate">Corporate</a></li>
                     <li><a href="#" data-filter=".portfolio">Portfolio</a></li>
                 </ul><!--/#portfolio-filter-->
             </div>
-            <div class='portfolio-items' id="abigos"></div>
+            <div id="amigos"></div>
+            <div id="ficchar" hidden="hidden">
+                <label>MUDA MUDA</label><br/>
+                <input type="text"/>
+            </div>
         </div><!--/.container-->
     </section><!--/#portfolio-->
 <!--
@@ -200,11 +204,9 @@ function getTaggable_Friends(){
         var src="";
         var i;
         for(i=0;i<=tag_friends.data.length;i++){
-//            $("#abigos").append("<br/><br/><img src='"+tag_friends.data[i].picture.data.url+"'/>");
-//            $("#abigos").append(tag_friends.data[i].name);
             src=tag_friends.data[i].picture.data.url;
-            gg="<div class='portfolio-item creative'><div class='portfolio-item-inner'><img onclick='generateimg(this.src)' id='friend"+i+"' class='img-responsive' src='"+tag_friends.data[i].picture.data.url+"' alt='' width='300px' height='300px' /><div class='portfolio-info'><h3>"+tag_friends.data[i].name+"</h3>"+tag_friends.data[i].id+"<a class='preview' rel='prettyPhoto'><i class='fa fa-heart'></i></a></div></div><!--/.portfolio-item--></div>";
-            $("#abigos").append(gg);
+            gg="<div class='portfolio-item creative'><div class='portfolio-item-inner'><img onclick='generateimg(this.src)' id='friend"+i+"' class='img-responsive' src='"+tag_friends.data[i].picture.data.url+"' alt='' width='300px' height='300px' /><div class='portfolio-info'><h3>"+tag_friends.data[i].name+"</h3>"+tag_friends.data[i].id+"<a class='preview' rel='prettyPhoto'><i class='fa fa-heart'></i></a></div></div><!--/.portfolio-item-->";
+            $("#amigos").append(gg);
         }
     });
 }
@@ -283,8 +285,26 @@ context.drawImage(img1, 0, 0);
     context.drawImage(img2, 600, 600, 300, 300);
 //context.globalAlpha = 1.0; //Remove if pngs have alpha
 
-
-}        
+}
+    
+$("#tab_amigos").click(function() {
+    $("#ficchar").hide();
+    $("#amigos").show();
+    alert("abigos");
+});
+$("#tab_ficchar").click(function() {
+    $("#amigos").hide();
+    $("#ficchar").show();
+    alert("fic");
+});
+function show_amigos(){
+    $("#ficchar").hide();
+    $("#amigos").show();
+}
+function show_ficchar(){
+    $("#amigos").hide();
+    $("#ficchar").show();
+}    
 </script>
 </body>
 </html>
